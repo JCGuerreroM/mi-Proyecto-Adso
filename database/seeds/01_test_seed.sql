@@ -11,7 +11,7 @@ VALUES (
 );
 
 -- Paso 2: Emitir token con expiración calculada a 24 horas exactas
-INSERT INTO verification_tokens (user_id, token, expires_at)
+INSERT INTO verification_tokens (user_id, token_hash, expires_at)
 VALUES (
     'b0000000-0000-0000-0000-000000000002',
     encode(gen_random_bytes(32), 'hex'), -- 64 caracteres hexadecimales
