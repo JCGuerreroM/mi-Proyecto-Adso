@@ -1,0 +1,29 @@
+{
+ "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^18.0.10",
+    "express": "^5.3.0",
+    "mongoose": "^9.13.0",
+    "morgan": "^1.12.1",
+    "pg": "^8.23.1"
+  },
+  "name": "server",
+  "version": "1.0.0",
+  "description": "DIRECTORIO SERVER",
+  "main": "src/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node --watch src/server.js",
+    "dev": "node --watch src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JCGuerreroM/mi-Proyecto-Adso.git"
+  },
+  "keywords": [],
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/JCGuerreroM/mi-Proyecto-Adso/issues"
+  },
+  "homepage": "https://github.com/JCGuerreroM/mi-Proyecto-Adso#readme"
+}
