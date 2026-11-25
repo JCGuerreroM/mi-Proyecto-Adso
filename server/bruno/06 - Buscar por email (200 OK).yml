@@ -1,0 +1,35 @@
+info:
+  name: 06 - Buscar por email (200 OK)
+  type: http
+  seq: 6
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/dev/users/by-email?email=nuevo.aprendiz@misena.edu.co"
+  params:
+    - name: email
+      value: nuevo.aprendiz@misena.edu.co
+      type: query
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Buscar por email (200 OK)", function () {
+            expect(res.status).to.equal(200);
+            expect(res.body.success).to.equal(true);
+            expect(res.body.data.email).to.equal("nuevo.aprendiz@misena.edu.co");
+          });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true
+
+docs: |-
+  docs {
+    Consulta un usuario existente por su correo electrónico.
+  }

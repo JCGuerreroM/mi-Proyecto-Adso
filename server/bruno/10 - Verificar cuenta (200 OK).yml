@@ -1,0 +1,31 @@
+info:
+  name: 10 - Verificar cuenta (200 OK)
+  type: http
+  seq: 10
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/api/dev/users/b0000000-0000-0000-0000-000000000002/verify"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Verificar cuenta (200 OK)", function () {
+            expect(res.status).to.equal(200);
+            expect(res.body.success).to.equal(true);
+            expect(res.body.data.is_verified).to.equal(true);
+          });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true
+
+docs: |-
+  docs {
+    Activa la cuenta del usuario (is_verified = true) y elimina sus tokens de verificación en una transacción.
+  }

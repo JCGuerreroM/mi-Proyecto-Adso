@@ -1,0 +1,30 @@
+info:
+  name: 11 - Re-verificar cuenta (409 Conflict)
+  type: http
+  seq: 11
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/api/dev/users/b0000000-0000-0000-0000-000000000002/verify"
+  auth: inherit
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Re-verificar cuenta ya verificada (409 Conflict)", function () {
+            expect(res.status).to.equal(409);
+            expect(res.body.code).to.equal("USER_ALREADY_VERIFIED");
+          });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true
+
+docs: |-
+  docs {
+    Intenta verificar por segunda vez una cuenta ya activada para comprobar el conflicto HTTP 409 y USER_ALREADY_VERIFIED.
+  }
