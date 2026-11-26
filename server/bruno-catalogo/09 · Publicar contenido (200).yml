@@ -1,0 +1,18 @@
+info:
+  name: 09 · Publicar contenido (200)
+  type: http
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/api/dev/content/{{contentId}}"
+  body:
+    type: json
+    data: '{ "active": true }'
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

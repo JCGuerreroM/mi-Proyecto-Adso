@@ -1,0 +1,15 @@
+info:
+  name: 11 · Eliminar contenido (204)
+  type: http
+
+http:
+  method: DELETE
+  url: "{{baseUrl}}/api/dev/content/{{contentId}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

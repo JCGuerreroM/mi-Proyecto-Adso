@@ -1,0 +1,19 @@
+info:
+  name: 02 · Publicados por tipo (200)
+  type: http
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/content/published?type=service"
+  params:
+    - name: type
+      value: service
+      type: query
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

@@ -1,0 +1,15 @@
+info:
+  name: 12 · Eliminar de nuevo (404)
+  type: http
+
+http:
+  method: PATCH
+  url: "{{baseUrl}}/api/dev/content/{{contentId}}"
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true

@@ -1,0 +1,23 @@
+info:
+  name: 06 · Banner con enlace javascript (400)
+  type: http
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/dev/content"
+  body:
+    type: json
+    data: |-
+      {
+        "type": "banner",
+        "title": "Banner malicioso",
+        "ctaUrl": "javascript:alert(document.cookie)"
+      }
+  auth: inherit
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5
+  forwardAuthorizationHeader: true
