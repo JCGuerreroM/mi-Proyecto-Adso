@@ -3,6 +3,15 @@ import mongoose from 'mongoose';
 import {config} from './environment.js';
 
 const { Pool } = pg;
+
+// Defensa contra inyección NoSQL (Sesión 10), segunda capa tras validar en el controlador:
+// - sanitizeFilter: si un filtro trae un objeto con operadores ($ne, $gt...) donde se
+//   esperaba un valor, Mongoose lo envuelve en $eq: deja de ser operador y, como no es
+//   texto, la consulta falla con CastError (400) en lugar de devolver datos ajenos.
+// - strictQuery: los filtros por campos que no existen en el esquema se descartan.
+mongoose.set('sanitizeFilter', true);
+mongoose.set('strictQuery', true);
+
 // ------------------------------------------------------------
 // 1. Singleton pg.Pool (PostgreSQL)
 // ------------------------------------------------------------
@@ -45,24 +54,49 @@ export async function connectDatabases() {
 
   // A. Verificación PostgreSQL
   try {
-    const res = await pool.query('SELECT NOW() AS t, current_database() AS db');
-    console.log(`✅ [PostgreSQL Conectado] Base: "${res.rows[0].db}"`);
+    const start = Date.now();
+    const result = await pool.query('SELECT NOW() AS server_time, current_database() AS db_name');
+    const latency = Date.now() - start;
+    console.log(`✅ [PostgreSQL Conectado] Base: "${result.rows[0].db_name}" | Latencia: ${latency}ms`);
   } catch (err) {
     console.error(`❌ [PostgreSQL Falló Conexión]: ${err.message}`);
+    console.warn('   Verifique que el servicio PostgreSQL esté activo y las credenciales en .env sean válidas.');
   }
 
   // B. Inicialización MongoDB Atlas
   try {
+    const start = Date.now();
     await mongoose.connect(config.mongo.uri, { serverSelectionTimeoutMS: 5000 });
-    console.log(`✅ [MongoDB Atlas Conectado] Base: "${mongoose.connection.name}"`);
+    const latency = Date.now() - start;
+    console.log(`✅ [MongoDB Atlas Conectado] Base: "${mongoose.connection.name}" | Latencia: ${latency}ms`);
   } catch (err) {
     console.error(`❌ [MongoDB Falló Conexión]: ${err.message}`);
+    console.warn('   Verifique su cadena MONGO_URI y la regla de IP Access List en MongoDB Atlas.');
   }
 }
 
+/**
+ * Cierre controlado de conexiones para Graceful Shutdown.
+ * allSettled: si una base falla al cerrar, la otra igual se cierra.
+ */
 export async function disconnectDatabases() {
-  await pool.end();
-  await mongoose.connection.close();
-  console.log('🔒 Ambas bases de datos cerradas correctamente');
+  console.log('\n🛑 [ADSO DUAL DB] Cerrando conexiones a bases de datos de forma segura...');
+
+  const [pgResult, mongoResult] = await Promise.allSettled([
+    pool.end(),
+    mongoose.connection.close()
+  ]);
+
+  if (pgResult.status === 'rejected') {
+    console.error('Error cerrando pool de PostgreSQL:', pgResult.reason?.message);
+  } else {
+    console.log('🔒 [PostgreSQL] Pool cerrado correctamente');
+  }
+
+  if (mongoResult.status === 'rejected') {
+    console.error('Error cerrando conexión de MongoDB:', mongoResult.reason?.message);
+  } else {
+    console.log('🔒 [MongoDB] Conexión cerrada correctamente');
+  }
 }
 // ------------------------------------------------------------
